@@ -1,41 +1,16 @@
+# p8_dart_mermaid
 
-# Finance Tracker Flutter App - P8
+A new Flutter project.
 
-A simple finance tracking application built with Flutter.
+## Getting Started
 
-## Features
-- Track income and expenses
-- Categorize transactions
-- View current and past records
-- Simple form validation
+This project is a starting point for a Flutter application.
 
-## UML Diagram
+A few resources to get you started if this is your first Flutter project:
 
-```mermaid
-classDiagram
-    class FinanceRecord {
-        +double income
-        +double expenses
-        +int category
-        +String type
-        +FinanceRecord.empty()
-        +double get net
-        +Map<String, dynamic> toJson()
-        +FinanceRecord.fromJson(Map<String, dynamic> json)
-    }
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-    class FinanceTrackerScreen {
-        -_formKey
-        -_incomeController
-        -_expensesController
-        -_typeController
-        -_selectedCategory
-        -_currentRecord
-        -_records
-        -_categories
-        +_saveRecord()
-        +_resetForm()
-    }
-
-    FinanceTrackerScreen --> FinanceRecord : Uses
-```
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

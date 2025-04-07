@@ -33,6 +33,7 @@ classDiagram
         _categories
         _saveRecord()
         _resetForm()
+        _getCategoryName
     }
 
     FinanceTrackerScreen --> FinanceRecord : Uses

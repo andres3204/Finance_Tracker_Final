@@ -33,7 +33,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
 
   int? _selectedCategory;
   FinanceRecord _currentRecord = FinanceRecord.empty();
-  List<FinanceRecord> _records = [];
+  final List<FinanceRecord> _records = [];
 
   final List<String> _categories = [
     'Housing',

@@ -1,6 +1,7 @@
 # Finance Tracker Flutter App - P8
 
 A simple finance tracking application built with Flutter.
+- Files for app are under finance_flutter/lib/.
 
 ## Features
 - Track income and expenses

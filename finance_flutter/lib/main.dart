@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'finance_model.dart';
+import 'database_service.dart';
 
 void main() {
   runApp(const FinanceTrackerApp());
@@ -31,10 +32,14 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
   final _expensesController = TextEditingController();
   final _typeController = TextEditingController();
 
-  int? _selectedCategory;
+  int _selectedSalarySlot = 0;
+  final Map<int, double> _salarySlotIncomes = {
+    for (var i = 0; i < 10; i++) i: 0.0,
+  };
+
+  String? _selectedCategory;
   FinanceRecord _currentRecord = FinanceRecord.empty();
   final List<FinanceRecord> _records = [];
-
   final List<String> _categories = [
     'Housing',
     'Transport',
@@ -48,6 +53,10 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     'Entertainment',
   ];
 
+  bool _isIncomeLocked(int slot) {
+    return _records.any((r) => r.incomeRange == slot);
+  }
+
   @override
   void dispose() {
     _incomeController.dispose();
@@ -56,17 +65,69 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     super.dispose();
   }
 
-  void _saveRecord() {
+  void _loadRecordsFromDatabase() async {
+    final records = await DatabaseService().getAllRecords();
+    print("Loaded Records: $records"); // Debugging output
+    setState(() {
+      _records.clear();
+      _records.addAll(records);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecordsFromDatabase();
+  }
+
+  void _saveRecord() async {
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
+      double income = double.tryParse(_incomeController.text) ?? 0;
+      double expenses = double.tryParse(_expensesController.text) ?? 0;
+
+      // First time this salary slot is used: set the base income
+      if (_records.where((r) => r.incomeRange == _selectedSalarySlot).isEmpty) {
+        _salarySlotIncomes[_selectedSalarySlot] = income;
+      } else {
+        income = _salarySlotIncomes[_selectedSalarySlot]!;
+      }
+
+      // Get previous remaining or set it to the salary income
+      double previousRemaining =
+          _records
+              .where((r) => r.incomeRange == _selectedSalarySlot)
+              .lastOrNull
+              ?.remaining ??
+          income;
+
+      double remaining = previousRemaining - expenses;
+
+      // Warn if overspending
+      if (remaining < 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Oops, you are spending more than you are supposed to.',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Stop saving
+      }
+
       setState(() {
         _currentRecord = FinanceRecord(
-          income: double.tryParse(_incomeController.text) ?? 0,
-          expenses: double.tryParse(_expensesController.text) ?? 0,
-          category: _selectedCategory!,
+          income: income,
+          expenses: expenses,
+          category: _categories.indexOf(_selectedCategory!),
           type: _typeController.text,
+          date: DateTime.now(),
+          incomeRange: _selectedSalarySlot,
         );
         _records.add(_currentRecord);
       });
+
+      await DatabaseService().insertRecord(_currentRecord);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Record saved successfully!')),
@@ -91,11 +152,47 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     });
   }
 
-  String _getCategoryName(int category) {
-    if (category >= 1 && category <= _categories.length) {
-      return _categories[category - 1];
-    }
-    return 'Uncategorized';
+  void _addNewCategory() {
+    TextEditingController newCategoryController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New Category'),
+          content: TextField(
+            controller: newCategoryController,
+            decoration: const InputDecoration(hintText: 'Enter category'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                if (newCategoryController.text.isNotEmpty) {
+                  setState(() {
+                    _categories.add(newCategoryController.text);
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Add'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addNewSalarySlot() {
+    setState(() {
+      int newSlot = _salarySlotIncomes.length;
+      _salarySlotIncomes[newSlot] = 0.0;
+    });
   }
 
   @override
@@ -119,13 +216,49 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Income Input
+                const Text(
+                  'Select Salary Slot:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children:
+                      _salarySlotIncomes.keys.map((slot) {
+                        return ChoiceChip(
+                          label: Text('Salary ${slot + 1}'),
+                          selected: _selectedSalarySlot == slot,
+                          onSelected: (_) {
+                            setState(() {
+                              _selectedSalarySlot = slot;
+                              _incomeController.text =
+                                  _salarySlotIncomes[slot]?.toStringAsFixed(
+                                    2,
+                                  ) ??
+                                  '';
+                            });
+                          },
+                        );
+                      }).toList(),
+                ),
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: _addNewSalarySlot,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add Salary Slot'),
+                ),
+                const SizedBox(height: 16),
+
                 TextFormField(
                   controller: _incomeController,
                   decoration: const InputDecoration(
                     labelText: 'Income',
                     border: OutlineInputBorder(),
                   ),
+                  enabled:
+                      !_isIncomeLocked(
+                        _selectedSalarySlot,
+                      ), // <-- Disable if locked
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -139,7 +272,6 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Expenses Input
                 TextFormField(
                   controller: _expensesController,
                   decoration: const InputDecoration(
@@ -159,30 +291,37 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Category Selection
                 const Text(
                   'Select Category:',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  children:
-                      List<Widget>.generate(_categories.length, (int index) {
-                        return ChoiceChip(
-                          label: _categories[index],
-                          selected: _selectedCategory == index + 1,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              _selectedCategory = selected ? index + 1 : null;
-                            });
-                          },
-                        );
-                      }).toList(),
+                DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  hint: const Text('Select a Category'),
+                  items:
+                      _categories
+                          .map(
+                            (category) => DropdownMenuItem<String>(
+                              value: category,
+                              child: Text(category),
+                            ),
+                          )
+                          .toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedCategory = newValue;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a category';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
-                // Type Input
                 TextFormField(
                   controller: _typeController,
                   decoration: const InputDecoration(
@@ -198,16 +337,22 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Save Button
                 Center(
                   child: ElevatedButton(
                     onPressed: _saveRecord,
                     child: const Text('Save Record'),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
-                // Current Record Display
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _addNewCategory,
+                    child: const Text('Add New Category'),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
                 const Text(
                   'Current Record:',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -219,15 +364,27 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Text(
+                          'Salary Slot Incomes:',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:
+                              _salarySlotIncomes.entries.map((entry) {
+                                return Text(
+                                  'Salary ${entry.key + 1}: \$${entry.value.toStringAsFixed(2)}',
+                                );
+                              }).toList(),
+                        ),
+                        const SizedBox(height: 16),
                         Text(
                           'Income: \$${_currentRecord.income.toStringAsFixed(2)}',
                         ),
                         Text(
                           'Expenses: \$${_currentRecord.expenses.toStringAsFixed(2)}',
                         ),
-                        Text(
-                          'Category: ${_getCategoryName(_currentRecord.category)}',
-                        ),
+                        Text('Category: ${_currentRecord.category}'),
                         Text('Type: ${_currentRecord.type}'),
                       ],
                     ),
@@ -235,7 +392,6 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // All Records List
                 const Text(
                   'All Records:',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -253,10 +409,10 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                                   '\$${record.income.toStringAsFixed(2)} Income / \$${record.expenses.toStringAsFixed(2)} Expenses',
                                 ),
                                 subtitle: Text(
-                                  '${_getCategoryName(record.category)} - ${record.type}',
+                                  '${record.category} - ${record.type}',
                                 ),
                                 trailing: Text(
-                                  'Net: \$${(record.income - record.expenses).toStringAsFixed(2)}',
+                                  'Remaining: \$${record.remaining.toStringAsFixed(2)}',
                                 ),
                               ),
                             );
@@ -271,29 +427,6 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
   }
 }
 
-class ChoiceChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final ValueChanged<bool> onSelected;
-
-  const ChoiceChip({
-    super.key,
-    required this.label,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: onSelected,
-      selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
-      checkmarkColor: Theme.of(context).primaryColor,
-      labelStyle: TextStyle(
-        color: selected ? Theme.of(context).primaryColor : Colors.black,
-      ),
-    );
-  }
+extension ListExtension<T> on List<T> {
+  T? get lastOrNull => isNotEmpty ? last : null;
 }

@@ -1,35 +1,53 @@
 class FinanceRecord {
-  final double income;
-  final double expenses;
-  final int category; // 1-10 corresponding to categories
-  final String type;
+  double income;
+  double expenses;
+  int category; // Index of the category
+  String type;
+  DateTime date;
+  int incomeRange; // Salary slot
 
-  const FinanceRecord({
+  FinanceRecord({
     required this.income,
     required this.expenses,
     required this.category,
     required this.type,
+    required this.date,
+    required this.incomeRange,
   });
 
-  const FinanceRecord.empty()
-    : income = 0,
-      expenses = 0,
+  // Empty constructor for initializing an empty record
+  FinanceRecord.empty()
+    : income = 0.0,
+      expenses = 0.0,
       category = 0,
-      type = '';
+      type = '',
+      date = DateTime.now(),
+      incomeRange = 0;
 
-  double get net => income - expenses;
+  // Getter for remaining income after expenses
+  double get remaining => income - expenses;
 
-  Map<String, dynamic> toJson() => {
-    'income': income,
-    'expenses': expenses,
-    'category': category,
-    'type': type,
-  };
+  // Convert FinanceRecord to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'income': income,
+      'expenses': expenses,
+      'category': category,
+      'type': type,
+      'date': date.toIso8601String(), // Convert DateTime to ISO string
+      'incomeRange': incomeRange,
+    };
+  }
 
-  factory FinanceRecord.fromJson(Map<String, dynamic> json) => FinanceRecord(
-    income: json['income'] as double,
-    expenses: json['expenses'] as double,
-    category: json['category'] as int,
-    type: json['type'] as String,
-  );
+  // Convert JSON to FinanceRecord
+  factory FinanceRecord.fromJson(Map<String, dynamic> json) {
+    return FinanceRecord(
+      income: json['income'],
+      expenses: json['expenses'],
+      category: json['category'],
+      type: json['type'],
+      date: DateTime.parse(json['date']), // Convert ISO string back to DateTime
+      incomeRange: json['incomeRange'],
+    );
+  }
 }

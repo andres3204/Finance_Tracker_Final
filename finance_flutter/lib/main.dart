@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'finance_model.dart';
-import 'database_service.dart';
 
 void main() {
   runApp(const FinanceTrackerApp());
@@ -65,22 +64,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     super.dispose();
   }
 
-  void _loadRecordsFromDatabase() async {
-    final records = await DatabaseService().getAllRecords();
-    print("Loaded Records: $records"); // Debugging output
-    setState(() {
-      _records.clear();
-      _records.addAll(records);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadRecordsFromDatabase();
-  }
-
-  void _saveRecord() async {
+  void _saveRecord() {
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
       double income = double.tryParse(_incomeController.text) ?? 0;
       double expenses = double.tryParse(_expensesController.text) ?? 0;
@@ -119,6 +103,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
         _currentRecord = FinanceRecord(
           income: income,
           expenses: expenses,
+          remaining: remaining,
           category: _categories.indexOf(_selectedCategory!),
           type: _typeController.text,
           date: DateTime.now(),
@@ -126,8 +111,6 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
         );
         _records.add(_currentRecord);
       });
-
-      await DatabaseService().insertRecord(_currentRecord);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Record saved successfully!')),

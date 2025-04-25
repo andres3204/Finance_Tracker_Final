@@ -1,10 +1,11 @@
 class FinanceRecord {
   double income;
   double expenses;
-  int category; // Index of the category
+  int category;
   String type;
   DateTime date;
-  int incomeRange; // Salary slot
+  int incomeRange;
+  double remaining; // Add this
 
   FinanceRecord({
     required this.income,
@@ -13,41 +14,39 @@ class FinanceRecord {
     required this.type,
     required this.date,
     required this.incomeRange,
+    required this.remaining, // Add to constructor
   });
 
-  // Empty constructor for initializing an empty record
   FinanceRecord.empty()
     : income = 0.0,
       expenses = 0.0,
       category = 0,
       type = '',
       date = DateTime.now(),
-      incomeRange = 0;
+      incomeRange = 0,
+      remaining = 0.0;
 
-  // Getter for remaining income after expenses
-  double get remaining => income - expenses;
-
-  // Convert FinanceRecord to JSON
   Map<String, dynamic> toJson() {
     return {
       'income': income,
       'expenses': expenses,
       'category': category,
       'type': type,
-      'date': date.toIso8601String(), // Convert DateTime to ISO string
+      'date': date.toIso8601String(),
       'incomeRange': incomeRange,
+      'remaining': remaining, // Save remaining
     };
   }
 
-  // Convert JSON to FinanceRecord
   factory FinanceRecord.fromJson(Map<String, dynamic> json) {
     return FinanceRecord(
       income: json['income'],
       expenses: json['expenses'],
       category: json['category'],
       type: json['type'],
-      date: DateTime.parse(json['date']), // Convert ISO string back to DateTime
+      date: DateTime.parse(json['date']),
       incomeRange: json['incomeRange'],
+      remaining: json['remaining'], // Load remaining
     );
   }
 }

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'finance_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:logger/logger.dart';
+
+var logger = Logger();
 
 void main() {
   runApp(const FinanceTrackerApp());
@@ -56,9 +59,9 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     );
 
     if (response.statusCode == 201) {
-      print('Tracker entry added successfully!');
+      logger.d('Tracker entry added successfully!');
     } else {
-      print('Failed to add tracker entry: ${response.body}');
+      logger.d('Failed to add tracker entry: ${response.body}');
     }
   }
 

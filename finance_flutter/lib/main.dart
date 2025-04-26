@@ -146,7 +146,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
         _records.add(_currentRecord);
       });
 
-      // 🧩 ADD THIS: API call to save the record
+      // API call to save the record
       await addTrackerEntry(
         salaryNum: _selectedSalarySlot,
         income: income,

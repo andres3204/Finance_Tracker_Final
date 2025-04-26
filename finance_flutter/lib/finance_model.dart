@@ -2,7 +2,7 @@ class FinanceRecord {
   double income;
   double expenses;
   int category;
-  String type;
+  String types;
   DateTime date;
   int incomeRange;
   double remaining; // Add this
@@ -11,7 +11,7 @@ class FinanceRecord {
     required this.income,
     required this.expenses,
     required this.category,
-    required this.type,
+    required this.types,
     required this.date,
     required this.incomeRange,
     required this.remaining, // Add to constructor
@@ -21,7 +21,7 @@ class FinanceRecord {
     : income = 0.0,
       expenses = 0.0,
       category = 0,
-      type = '',
+      types = '',
       date = DateTime.now(),
       incomeRange = 0,
       remaining = 0.0;
@@ -31,7 +31,7 @@ class FinanceRecord {
       'income': income,
       'expenses': expenses,
       'category': category,
-      'type': type,
+      'type': types,
       'date': date.toIso8601String(),
       'incomeRange': incomeRange,
       'remaining': remaining, // Save remaining
@@ -43,7 +43,7 @@ class FinanceRecord {
       income: json['income'],
       expenses: json['expenses'],
       category: json['category'],
-      type: json['type'],
+      types: json['type'],
       date: DateTime.parse(json['date']),
       incomeRange: json['incomeRange'],
       remaining: json['remaining'], // Load remaining

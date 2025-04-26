@@ -38,7 +38,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     required double income,
     required double expenses,
     required String category,
-    required String type,
+    required String types,
   }) async {
     const url =
         'http://localhost:8080/tracker'; // use 10.0.2.2 if running on Android emulator
@@ -51,7 +51,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
         'income': income,
         'expenses': expenses,
         'category': category,
-        'type': type,
+        'types': types,
       }),
     );
 
@@ -136,7 +136,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
           expenses: expenses,
           remaining: remaining,
           category: _categories.indexOf(_selectedCategory!),
-          type: _typeController.text,
+          types: _typeController.text,
           date: DateTime.now(),
           incomeRange: _selectedSalarySlot,
         );
@@ -149,7 +149,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
         income: income,
         expenses: expenses,
         category: _selectedCategory!,
-        type: _typeController.text,
+        types: _typeController.text,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -408,7 +408,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                           'Expenses: \$${_currentRecord.expenses.toStringAsFixed(2)}',
                         ),
                         Text('Category: ${_currentRecord.category}'),
-                        Text('Type: ${_currentRecord.type}'),
+                        Text('Type: ${_currentRecord.types}'),
                       ],
                     ),
                   ),
@@ -432,7 +432,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                                   '\$${record.income.toStringAsFixed(2)} Income / \$${record.expenses.toStringAsFixed(2)} Expenses',
                                 ),
                                 subtitle: Text(
-                                  '${record.category} - ${record.type}',
+                                  '${record.category} - ${record.types}',
                                 ),
                                 trailing: Text(
                                   'Remaining: \$${record.remaining.toStringAsFixed(2)}',

@@ -1,22 +1,44 @@
+import mysql from "mysql2";
+import dotenv from "dotenv";
+dotenv.config()
+
 // //CONNECTS TO THE DATABASE
-// const mysql = require('mysql2');
-// const dotenv = require('dotenv');
-// dotenv.config();
+const pool = mysql.createPool({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
+}).promise();
 
-// const pool = mysql.createPool({
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD,
-//     database: process.env.DB_NAME
-// });
+export async function getData() {
+    const [rows] = await pool.query(`SELECT * FROM tracker`);
+    return rows;
+}
 
-// Example: MySQL2 connection
-const mysql = require('mysql2/promise');
-const db = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'finance_tracker',
-});
+export async function getSingleValue(id) {
+    const [rows] = await pool.query(`
+        SELECT * 
+        FROM tracker
+        WHERE idtracker = ?
+        `, [id]);
+    return rows[0];
+}
 
-module.exports = pool.promise();
+export async function createEntry(salary_num, income, expenses, category, types) {
+    const [result] = await pool.query(`
+        INSERT INTO tracker (salary_num, income, expenses, category, types)
+        VALUES (?, ?, ?, ?, ?)
+        `, [salary_num, income, expenses, category, types]);
+    return result;
+}
+
+// const trackers = await getData();
+// console.log(trackers);
+
+// const tracker = await getSingleValue(1);
+// console.log(tracker);
+
+// const result = await createEntry(1, 100, 30, "Housing", "Rent");
+// console.log(result);
+
+// module.exports = pool.promise();

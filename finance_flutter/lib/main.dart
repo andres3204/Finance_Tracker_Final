@@ -41,7 +41,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     required String type,
   }) async {
     const url =
-        'http://10.0.2.2:3000/tracker'; // use 10.0.2.2 if running on Android emulator
+        'http://localhost:8080/tracker'; // use 10.0.2.2 if running on Android emulator
 
     final response = await http.post(
       Uri.parse(url),

@@ -3,8 +3,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
+const trackerRoutes = require('./routes/tracker'); // adjust path if needed
 
 const app = express();
+app.use('/tracker', trackerRoutes); // Route base path
 
 const apiRoutes = require('./routes/api_db');
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'finance_model.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const FinanceTrackerApp());
@@ -30,6 +31,35 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
   final _incomeController = TextEditingController();
   final _expensesController = TextEditingController();
   final _typeController = TextEditingController();
+
+  Future<void> saveTracker(
+    String salaryNum,
+    String income,
+    String expenses,
+    String category,
+    String type,
+  ) async {
+    final url = Uri.parse(
+      'http://10.10.26.143:3000/saving',
+    ); // cambia a tu URL real
+
+    final response = await http.post(
+      url,
+      body: {
+        'salary_num': salaryNum,
+        'income': income,
+        'expenses': expenses,
+        'category': category,
+        'type': type,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('✔ Data succesfully saved');
+    } else {
+      print('❌ Error trying to save: ${response.body}');
+    }
+  }
 
   int _selectedSalarySlot = 0;
   final Map<int, double> _salarySlotIncomes = {

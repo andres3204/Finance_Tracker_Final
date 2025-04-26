@@ -24,6 +24,11 @@ export async function getSingleValue(id) {
     return rows[0];
 }
 
+export async function removeData() {
+    await pool.query(`DELETE FROM tracker`);
+    await pool.query('ALTER TABLE tracker AUTO_INCREMENT = 1');
+}
+
 export async function createEntry(salary_num, income, expenses, category, types) {
     const [result] = await pool.query(`
         INSERT INTO tracker (salary_num, income, expenses, category, types)

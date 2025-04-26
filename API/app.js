@@ -1,7 +1,7 @@
 // can also be named index.js
 import express from 'express'
 import cors from 'cors'
-import { getData, getSingleValue, createEntry } from './db.js'
+import { getData, getSingleValue, createEntry, removeData } from './db.js'
 
 const app = express();
 app.use(cors());
@@ -32,6 +32,16 @@ app.post("/tracker", async (req, res) => {
     const { salary_num, income, expenses, category, types } = req.body;
     const track = await createEntry(salary_num, income, expenses, category, types);
     res.status(201).send(track);
+});
+
+app.delete('/tracker', async (req, res) => {
+    try {
+        await removeData();
+        res.status(200).send('All tracker entries deleted');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error deleting tracker entries');
+    }
 });
 
 app.use((err, req, res, next) => {

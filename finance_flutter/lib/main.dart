@@ -36,6 +36,18 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
   final _expensesController = TextEditingController();
   final _typeController = TextEditingController();
 
+  Future<void> clearAllEntries() async {
+    const url =
+        'http://localhost:8080/tracker'; // or 10.0.2.2 if using Android emulator
+
+    final response = await http.delete(Uri.parse(url)); // Use DELETE method
+    if (response.statusCode == 200) {
+      logger.d('All tracker entries cleared successfully!');
+    } else {
+      logger.d('Failed to clear tracker entries: ${response.body}');
+    }
+  }
+
   Future<void> addTrackerEntry({
     required int salaryNum,
     required double income,
@@ -148,7 +160,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
 
       // API call to save the record
       await addTrackerEntry(
-        salaryNum: _selectedSalarySlot,
+        salaryNum: _selectedSalarySlot + 1,
         income: income,
         expenses: expenses,
         category: _selectedCategory!,
@@ -378,6 +390,22 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await clearAllEntries();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('All entries deleted!')),
+                      );
+                      setState(() {
+                        _records
+                            .clear(); // also clear your local list if needed
+                      });
+                    },
+                    child: const Text('Clear All Records'),
+                  ),
+                ),
 
                 const Text(
                   'Current Record:',

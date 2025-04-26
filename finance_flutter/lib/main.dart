@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'finance_model.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const FinanceTrackerApp());
@@ -32,32 +33,32 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
   final _expensesController = TextEditingController();
   final _typeController = TextEditingController();
 
-  Future<void> saveTracker(
-    String salaryNum,
-    String income,
-    String expenses,
-    String category,
-    String type,
-  ) async {
-    final url = Uri.parse(
-      'http://10.10.26.143:3000/saving',
-    ); // cambia a tu URL real
+  Future<void> addTrackerEntry({
+    required int salaryNum,
+    required double income,
+    required double expenses,
+    required String category,
+    required String type,
+  }) async {
+    const url =
+        'http://10.0.2.2:3000/tracker'; // use 10.0.2.2 if running on Android emulator
 
     final response = await http.post(
-      url,
-      body: {
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
         'salary_num': salaryNum,
         'income': income,
         'expenses': expenses,
         'category': category,
         'type': type,
-      },
+      }),
     );
 
-    if (response.statusCode == 200) {
-      print('✔ Data succesfully saved');
+    if (response.statusCode == 201) {
+      print('Tracker entry added successfully!');
     } else {
-      print('❌ Error trying to save: ${response.body}');
+      print('Failed to add tracker entry: ${response.body}');
     }
   }
 
@@ -94,7 +95,7 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
     super.dispose();
   }
 
-  void _saveRecord() {
+  void _saveRecord() async {
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
       double income = double.tryParse(_incomeController.text) ?? 0;
       double expenses = double.tryParse(_expensesController.text) ?? 0;
@@ -141,6 +142,15 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
         );
         _records.add(_currentRecord);
       });
+
+      // 🧩 ADD THIS: API call to save the record
+      await addTrackerEntry(
+        salaryNum: _selectedSalarySlot,
+        income: income,
+        expenses: expenses,
+        category: _selectedCategory!,
+        type: _typeController.text,
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Record saved successfully!')),

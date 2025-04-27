@@ -35,6 +35,4 @@ erDiagram
         STRING category
         STRING types
     }
-
-    TRACKER ||--o| TRACKER "Has Many Records"
 ```

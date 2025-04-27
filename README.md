@@ -34,12 +34,12 @@ erDiagram
     finance_tracker ||--o| tracker : has_table
 
     tracker {
-        int idtracker PK "Primary Key"
-        float salary_num "Salary Number"
-        float income "Income"
-        float expenses "Expenses"
-        string category "Category"
-        string types "Types"
+        int idtracker PK AI "ID"
+        INT salary_num NN "Salary Number"
+        INT income NN"Income"
+        INT expenses NN "Expenses"
+        string category VARCHAR(45) "Category"
+        string types VARCHAR(45) "Types"
     }
 
 ```

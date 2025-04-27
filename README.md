@@ -27,12 +27,19 @@ A simple finance tracking application built with Flutter.
 
 ```mermaid
 erDiagram
-    TRACKER {
-        INT idtracker PK "Primary Key"
-        INT salary_num
-        INT income
-        INT expenses
-        STRING category
-        STRING types
+    finance_tracker {
+        string name "Finance Tracker Database"
     }
+
+    finance_tracker ||--o| tracker : has_table
+
+    tracker {
+        int idtracker PK "Primary Key"
+        float salary_num "Salary Number"
+        float income "Income"
+        float expenses "Expenses"
+        string category "Category"
+        string types "Types"
+    }
+
 ```

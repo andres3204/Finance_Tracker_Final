@@ -36,10 +36,10 @@ erDiagram
     tracker {
         int idtracker PK AI "ID"
         INT salary_num NN "Salary Number"
-        INT income NN"Income"
+        INT income NN "Income"
         INT expenses NN "Expenses"
-        string category VARCHAR(45) "Category"
-        string types VARCHAR(45) "Types"
+        string category "Category"
+        string types "Types"
     }
 
 ```

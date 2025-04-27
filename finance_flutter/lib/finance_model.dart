@@ -1,20 +1,26 @@
+// finance_model.dart
+// Apr 26, 2025
+// Andres Jimenez
+// Model for the project. Specifies variables and stores data locally.
+// Converts the data to JSON for saving or sending it to the server.
+// Loads data from JSON into usable objects for the app.
+// Stores the remaining income after expenses are deducted, which helps in tracking how much is left from the income.
+
 class FinanceRecord {
   double income;
   double expenses;
   int category;
   String types;
-  DateTime date;
   int incomeRange;
-  double remaining; // Add this
+  double remaining;
 
   FinanceRecord({
     required this.income,
     required this.expenses,
     required this.category,
     required this.types,
-    required this.date,
     required this.incomeRange,
-    required this.remaining, // Add to constructor
+    required this.remaining,
   });
 
   FinanceRecord.empty()
@@ -22,7 +28,6 @@ class FinanceRecord {
       expenses = 0.0,
       category = 0,
       types = '',
-      date = DateTime.now(),
       incomeRange = 0,
       remaining = 0.0;
 
@@ -32,9 +37,8 @@ class FinanceRecord {
       'expenses': expenses,
       'category': category,
       'type': types,
-      'date': date.toIso8601String(),
       'incomeRange': incomeRange,
-      'remaining': remaining, // Save remaining
+      'remaining': remaining,
     };
   }
 
@@ -44,9 +48,8 @@ class FinanceRecord {
       expenses: json['expenses'],
       category: json['category'],
       types: json['type'],
-      date: DateTime.parse(json['date']),
       incomeRange: json['incomeRange'],
-      remaining: json['remaining'], // Load remaining
+      remaining: json['remaining'],
     );
   }
 }

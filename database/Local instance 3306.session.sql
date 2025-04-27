@@ -1,3 +1,7 @@
+-- Local Instance 3306.session.sql
+-- Apr 26, 2025
+-- Andres Jimenez
+-- Database and table, also has a couple of insert values to try out the database connection if needed.
 CREATE DATABASE IF NOT EXISTS finance_tracker;
 USE DATABASE finance_tracker;
 CREATE TABLE IF NOT EXISTS tracker (

@@ -1,3 +1,8 @@
+// db.js
+// Apr 26, 2025
+// Andres Jimenez
+// In charge of the Database logic functions, and gets the credentials from the .env file.
+
 import mysql from "mysql2";
 import dotenv from "dotenv";
 dotenv.config()

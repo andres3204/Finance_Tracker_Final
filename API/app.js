@@ -1,4 +1,9 @@
-// can also be named index.js
+// app.js
+// Apr 26, 2025
+// Andres Jimenez
+// Imports logic from db.js and creates the get, post, and delete request to handle requests and responses with the database. 
+// Uses port 8080 and link is under /tracker for easy access and easy to understand.
+
 import express from 'express'
 import cors from 'cors'
 import { getData, getSingleValue, createEntry, removeData } from './db.js'

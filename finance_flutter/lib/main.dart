@@ -1,3 +1,9 @@
+// main.dart
+// Apr 26, 2025
+// Andres Jimenez
+// View file and logic for project.
+// This file is in charge of the User Interface and its logic, changes made here will be displayed in the UI and also has the ability to communicate with the database.
+
 import 'package:flutter/material.dart';
 import 'finance_model.dart';
 import 'package:http/http.dart' as http;
@@ -152,7 +158,6 @@ class _FinanceTrackerScreenState extends State<FinanceTrackerScreen> {
           remaining: remaining,
           category: _categories.indexOf(_selectedCategory!),
           types: _typeController.text,
-          date: DateTime.now(),
           incomeRange: _selectedSalarySlot,
         );
         _records.add(_currentRecord);

@@ -7,6 +7,7 @@ A simple finance tracking application built with Flutter, Python, JS, and MySQL.
 - A Python project is doing the same, but it was not continued as tkinter is not as good as Dart for displaying UIs (under finance_tracker_python_not_using).
 
 ## Features (What does the App do?)
+The target user for this Application is somebody who wants to organize their paychecks better. This gives the ability to track the money the user spent from each salary income slot and will give back the remaining value for that income slot. It will also alert the user when they have spent more than what they earned for each specific salary or income slot. The App can: 
 - Track income and expenses.
 - Categorize transactions.
 - View current records.
@@ -16,9 +17,7 @@ A simple finance tracking application built with Flutter, Python, JS, and MySQL.
 - Ability to add a category if not displayed already.
 - Block income after the first record entry.
 - Show a message when the user spends more than they can.
-
-- The target user for this Application is somebody who wants to organize their paychecks better. This gives the ability to track the money the user spent from each salary income slot and will give back the remaining value for that income slot. It will also alert the user when they have spent more than what they earned for each specific salary or income slot.
-
+  
 ## How is the App Structured?
 - The frontend of the Finance Tracker application is built using Dart & Flutter, which provides the developer & the user with a really nice User Interface, easy to interact with, and with many different functionalities and layouts to choose from. The backend is developed with Node.js and MySQL, with an alternative Python implementation for database handling that was not used much, proving the project's read and save functionality, even though the user interface, done with tkinter, is not very good.
 

@@ -1,40 +1,45 @@
-# Finance Tracker Flutter App - P8
+# Finance Tracker Flutter App - Final Project
 
-A simple finance tracking application built with Flutter.
-- Files for app are under finance_flutter/lib/.
+A simple finance tracking application built with Flutter, python, JS, and MySQL.
+- Files for the app are under finance_flutter/lib/.
+- Files for the API logic in charge of communicating with the database are under the API folder.
+- The database folder with the queries creates the table and has two generic INSERTs to try the database connection.
+- A Python project is doing the same, but it was not continued as tkinter is not as good as Dart for displaying UIs (under finance_tracker_python_not_using).
 
 ## Features
-- Track income and expenses
-- Categorize transactions
-- View current and past records
+- Track income and expenses.
+- Categorize transactions.
+- View current records.
+- Delete records from the UI & Database.
+- Separate income slots for each of the months.
+- Ability to insert more income if needed.
+- Ability to add a category if not displayed already.
+- Block income after the first record entry.
+
+## Future Fixes
+- Edit the button for the income slot to change the income if it is entered incorrectly.
+- Edit button to change Salary slot names.
+- Button to remove Salary Slots.
+- Create different tables for each of the salaries.
+- The project only connects to Dart when running in Chrome or when an IP address and port number are used. It does not work with the #1 macOS version as it does not assign a port or IP address.
 
 ## UML Diagram
 
 ```mermaid
-classDiagram
-    class FinanceRecord {
-        double income
-        double expenses
-        int category
-        String type
-        FinanceRecord.empty()
-        double get net
-        Map<String, dynamic> toJson()
-        FinanceRecord.fromJson(Map<String, dynamic> json)
+erDiagram
+    finance_tracker {
+        string name "Finance Tracker Database"
     }
 
-    class FinanceTrackerScreen {
-        _formKey
-        _incomeController
-        _expensesController
-        _typeController
-        _selectedCategory
-        _currentRecord
-        _records
-        _categories
-        _saveRecord()
-        _resetForm()
+    finance_tracker ||--o| tracker : has_table
+
+    tracker {
+        int idtracker PK "ID"
+        int salary_num "Salary Number"
+        int income "Income"
+        int expenses "Expenses"
+        string category "Category"
+        string types "Types"
     }
 
-    FinanceTrackerScreen --> FinanceRecord : Uses
 ```

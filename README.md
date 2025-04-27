@@ -1,6 +1,6 @@
 # Finance Tracker Flutter App - Final Project
 
-A simple finance tracking application built with Flutter.
+A simple finance tracking application built with Flutter, python, JS, and MySQL.
 - Files for the app are under finance_flutter/lib/.
 - Files for the API logic in charge of communicating with the database are under the API folder.
 - The database folder with the queries creates the table and has two generic INSERTs to try the database connection.

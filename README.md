@@ -34,7 +34,7 @@ erDiagram
     finance_tracker ||--o| tracker : has_table
 
     tracker {
-        int idtracker PK AI "ID"
+        int idtracker PK "ID"
         int salary_num "Salary Number"
         int income "Income"
         int expenses "Expenses"

@@ -26,9 +26,9 @@ The target user for this Application is somebody who wants to organize their pay
 - The app sends data (idtracker, salary_num, income, expenses, categories, etc.) to the backend API endpoints in JSON format. It also receives data from the API in JSON format, which is then parsed and displayed on the UI. It only works on localhost if you want to communicate with the database through the API. Still, for future implementations, a Mac OS and production implementation can also be applied to it.
 
 - Backend (Node.js with MySQL) and API: The backend API uses Node.js with Express to handle HTTP requests. The API interacts with a MySQL database to store and retrieve financial records. The key API routes include:
-- 1. GET /tracker: Fetches all finance records from the database.
-- 2. POST /tracker: Adds a new record to the database (income, expenses, category, etc.).
-- 3. DELETE /tracker: Clears all records from the database (for resetting purposes).
+  1. GET /tracker: Fetches all finance records from the database.
+  2. POST /tracker: Adds a new record to the database (income, expenses, category, etc.).
+  3. DELETE /tracker: Clears all records from the database (for resetting purposes).
  
 ## Instructions to run the program on a local computer
 1. Clone the repository: git clone <repo-link>

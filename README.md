@@ -35,9 +35,9 @@ erDiagram
 
     tracker {
         int idtracker PK "ID"
-        int salary_num "Salary Number"
-        int income "Income"
-        int expenses "Expenses"
+        int salary_num NN "Salary Number"
+        int income NN"Income"
+        int expenses NN "Expenses"
         string category "Category"
         string types "Types"
     }

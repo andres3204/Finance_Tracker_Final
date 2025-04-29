@@ -32,7 +32,7 @@ The target user for this Application is somebody who wants to organize their pay
  
 ## Instructions to run the program on a local computer
 1. Clone the repository: git clone <repo-link>
-    - git clone https://github.com/your-username/finance-tracker.git
+    - git clone https://github.com/andres3204/Finance_Tracker_Final.git
     - cd finance-tracker
 2. Install all dependencies: MySQL Workbench, Git, Flutter, Dart, Thunder Client, Express, Cors, Node, Dotenv, JavaScript, & Python.
     - cd API
